@@ -1,12 +1,15 @@
 package application;
 
 import boardgame.Position;
+import boardgame.Tabuleiro;
+import Xadrex.Partida;
 
 public class main {
 
 	public static void main(String[] args) {
-		Position p1 = new Position(3 ,5);
-		System.out.println(p1);
+		Partida p1 = new Partida();
+		UI.printBoard(p1.getPecas());
+		
 	}
 
 }
