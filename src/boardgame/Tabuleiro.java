@@ -42,7 +42,7 @@ public class Tabuleiro {
 	
 	public void botaPeca(Peça peca, Position position) {
 		if(TemPeca(position)) {
-			throw new BoardException("Já tem uma peça nessa posição" +position);
+			throw new BoardException("Já tem uma peça nessa posição: " +position);
 		}
 		peças[position.getRow()][position.getColuna()] = peca;
 		peca.position = position;

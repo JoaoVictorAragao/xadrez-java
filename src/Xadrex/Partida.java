@@ -1,10 +1,9 @@
 package Xadrex;
 
-import boardgame.Tabuleiro;
 import Xadrex.peças.Rei;
 import Xadrex.peças.Torre;
 import boardgame.Peça;
-import boardgame.Position;
+import boardgame.Tabuleiro;
 
 public class Partida {
 	
@@ -25,9 +24,14 @@ public class Partida {
 		return mat;
 	}
 	
-	private void SetupInicial() {
-		tabuleiro.botaPeca(new Torre(tabuleiro, Cor.BRANCO), new Position(2, 1));
-		tabuleiro.botaPeca(new Rei(tabuleiro, Cor.PRETO), new Position(2, 1));
+	public void BotaNovaPeca(char coluna, int linha, XadrexPeça peca) {
+		tabuleiro.botaPeca(peca, new PosicaoXadrez(coluna, linha).toPosition());
 	}
+	
+	private void SetupInicial() {
+		BotaNovaPeca('b', 6, new Torre(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('d', 5, new Rei(tabuleiro, Cor.PRETO));
+	}
+	
 	
 }
