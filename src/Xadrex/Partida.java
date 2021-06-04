@@ -27,7 +27,7 @@ public class Partida {
 	
 	private void SetupInicial() {
 		tabuleiro.botaPeca(new Torre(tabuleiro, Cor.BRANCO), new Position(2, 1));
-		tabuleiro.botaPeca(new Rei(tabuleiro, Cor.PRETO), new Position(4, 3));
+		tabuleiro.botaPeca(new Rei(tabuleiro, Cor.PRETO), new Position(2, 1));
 	}
 	
 }
