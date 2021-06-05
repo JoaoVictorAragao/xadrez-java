@@ -15,4 +15,10 @@ public class Rei extends XadrexPeça{
 	public String toString() {
 		return "R";
 	}
+
+	@Override
+	public boolean[][] possivelMov() {
+		boolean[][] mat = new boolean[getBoard().getLinhas()][getBoard().getColuna()];
+		return mat;
+	}
 }

@@ -3,7 +3,7 @@ package Xadrex;
 import boardgame.Peça;
 import boardgame.Tabuleiro;
 
-public class XadrexPeça extends Peça {
+public abstract class XadrexPeça extends Peça {
 	private Cor cor;
 
 	public XadrexPeça(Tabuleiro board, Cor cor) {

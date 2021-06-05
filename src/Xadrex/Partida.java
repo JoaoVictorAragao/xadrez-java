@@ -28,7 +28,7 @@ public class Partida {
 	public XadrexPeça Movimento(PosicaoXadrez origem, PosicaoXadrez destino) {
 		Position origemPos = origem.toPosition();
 		Position destinoPos = destino.toPosition();
-		validarPosicaoDest(origemPos);
+		validarPosicaoOrig(origemPos);
 		Peça refem = FazMov(origemPos, destinoPos);
 		return (XadrexPeça)refem;
 	}
@@ -40,10 +40,12 @@ public class Partida {
 		return refem;
 	}
 	
-	private void validarPosicaoDest(Position position) {
+	private void validarPosicaoOrig(Position position) {
 		if(!tabuleiro.TemPeca(position)) {
 			throw new ExcessaoDXadrez("Não existe peça nessa posição");
-			
+		}
+		if(!tabuleiro.peca(position).TemMov()) {
+			throw new ExcessaoDXadrez("Não tem movimento possível para esta peça");
 		}
 	}
 	

@@ -15,5 +15,11 @@ public class Torre extends XadrexPeça{
 	public String toString() {
 		return "T";
 	}
+
+	@Override
+	public boolean[][] possivelMov() {
+		boolean[][] mat = new boolean[getBoard().getLinhas()][getBoard().getColuna()];
+		return mat;
+	}
 	
 }
