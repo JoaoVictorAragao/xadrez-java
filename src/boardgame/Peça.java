@@ -13,14 +13,14 @@ public abstract class Peça {
 		return board;
 	}
 	
-	public abstract boolean[][] possivelMov();
+	public abstract boolean[][] possivelMovs();
 	
 	public boolean possivelMov(Position position) {
-		return possivelMov()[position.getRow()][position.getColuna()];
+		return possivelMovs()[position.getRow()][position.getColuna()];
 	}
 	
 	public boolean TemMov(){
-		boolean[][] mat = possivelMov();
+		boolean[][] mat = possivelMovs();
 		for(int i = 0; i<mat.length; i++) {
 			for(int j = 0; j<mat.length; j++) {
 				if(mat[i][j]) {

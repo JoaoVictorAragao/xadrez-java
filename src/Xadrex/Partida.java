@@ -29,6 +29,7 @@ public class Partida {
 		Position origemPos = origem.toPosition();
 		Position destinoPos = destino.toPosition();
 		validarPosicaoOrig(origemPos);
+		validarPosicaoDest(origemPos, destinoPos);
 		Peça refem = FazMov(origemPos, destinoPos);
 		return (XadrexPeça)refem;
 	}
@@ -46,6 +47,12 @@ public class Partida {
 		}
 		if(!tabuleiro.peca(position).TemMov()) {
 			throw new ExcessaoDXadrez("Não tem movimento possível para esta peça");
+		}
+	}
+	
+	private void validarPosicaoDest(Position origem, Position destino) {
+		if(!tabuleiro.peca(origem).possivelMov(destino)) {
+			throw new ExcessaoDXadrez("A peça escolhida não pode ser movida para o destino");
 		}
 	}
 	

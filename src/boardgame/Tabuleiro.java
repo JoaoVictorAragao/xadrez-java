@@ -34,7 +34,7 @@ public class Tabuleiro {
 	}
 	
 	public Peça peca(Position position){
-		if(!PeçaExiste(position)) {
+		if(!PosicaoExiste(position)) {
 			throw new BoardException("Já possuí uma peça nessa posição");
 		}
 		return peças[position.getRow()][position.getColuna()];
@@ -66,12 +66,12 @@ public class Tabuleiro {
 		return linha >= 0 && linha < this.linhas && this.coluna >= 0 && coluna < this.coluna;
 	}
 	
-	public boolean PeçaExiste(Position position) {
+	public boolean PosicaoExiste(Position position) {
 		return PosicaoExiste(position.getRow(), position.getColuna());
 	}
 	
 	public boolean TemPeca(Position position) {
-		if(!PeçaExiste(position)) {
+		if(!PosicaoExiste(position)) {
 			throw new BoardException("Posição não está no tabuleiro");
 		}
 		return peca(position) != null;

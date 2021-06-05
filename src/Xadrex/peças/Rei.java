@@ -17,7 +17,7 @@ public class Rei extends XadrexPeça{
 	}
 
 	@Override
-	public boolean[][] possivelMov() {
+	public boolean[][] possivelMovs() {
 		boolean[][] mat = new boolean[getBoard().getLinhas()][getBoard().getColuna()];
 		return mat;
 	}
