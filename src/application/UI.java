@@ -55,7 +55,7 @@ public class UI {
 		}
 		System.out.println("  a b c d e f g h");
 	}
-	
+
 	public static void printBoard(XadrexPeça[][] peca, boolean[][] possibleMoves) {
 		for (int i = 0; i < peca.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -66,22 +66,22 @@ public class UI {
 		}
 		System.out.println("  a b c d e f g h");
 	}
-	
+
 	private static void printPeca(XadrexPeça peca, boolean fundo) {
-		if(fundo) {
+		if (fundo) {
 			System.out.print(ANSI_BLUE_BACKGROUND);
 		}
-		if(peca == null) {
-			System.out.print("-" + ANSI_RESET);
-		}else {
 		if (peca == null) {
-			System.out.print("-");
+			System.out.print("-" + ANSI_RESET);
 		} else {
-			if (peca.getCor() == Cor.BRANCO) {
-				System.out.print(ANSI_WHITE + peca + ANSI_RESET);
+			if (peca == null) {
+				System.out.print("-");
 			} else {
-				System.out.print(ANSI_YELLOW + peca + ANSI_RESET);
-			}
+				if (peca.getCor() == Cor.BRANCO) {
+					System.out.print(ANSI_WHITE + peca + ANSI_RESET);
+				} else {
+					System.out.print(ANSI_YELLOW + peca + ANSI_RESET);
+				}
 			}
 		}
 		System.out.print(" ");
