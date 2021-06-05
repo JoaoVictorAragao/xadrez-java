@@ -1,6 +1,8 @@
 package Xadrex;
 
-public class ExcessaoDXadrez extends RuntimeException{
+import boardgame.BoardException;
+
+public class ExcessaoDXadrez extends BoardException{
 	private static final long serialVersionUID = 1L;
 	
 	public ExcessaoDXadrez(String msg) {

@@ -3,6 +3,7 @@ package Xadrex;
 import Xadrex.peças.Rei;
 import Xadrex.peças.Torre;
 import boardgame.Peça;
+import boardgame.Position;
 import boardgame.Tabuleiro;
 
 public class Partida {
@@ -22,6 +23,28 @@ public class Partida {
 			}
 		}
 		return mat;
+	}
+	
+	public XadrexPeça Movimento(PosicaoXadrez origem, PosicaoXadrez destino) {
+		Position origemPos = origem.toPosition();
+		Position destinoPos = destino.toPosition();
+		validarPosicaoDest(origemPos);
+		Peça refem = FazMov(origemPos, destinoPos);
+		return (XadrexPeça)refem;
+	}
+	
+	private Peça FazMov(Position origem, Position destino) {
+		Peça p = tabuleiro.removePeca(origem);
+		Peça refem = tabuleiro.removePeca(destino);
+		tabuleiro.botaPeca(p, destino);
+		return refem;
+	}
+	
+	private void validarPosicaoDest(Position position) {
+		if(!tabuleiro.TemPeca(position)) {
+			throw new ExcessaoDXadrez("Não existe peça nessa posição");
+			
+		}
 	}
 	
 	public void BotaNovaPeca(char coluna, int linha, XadrexPeça peca) {
