@@ -1,5 +1,8 @@
 package Xadrex;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Xadrex.peças.Rei;
 import Xadrex.peças.Torre;
 import boardgame.Peça;
@@ -11,6 +14,9 @@ public class Partida {
 	private int turno;
 	private Cor jogador;
 	private Tabuleiro tabuleiro;
+	
+	private List<Peça> pecasNoTabu = new ArrayList<>();
+	private List<Peça> capturedPecas = new ArrayList<>();
 	
 	public Partida() {
 		tabuleiro= new Tabuleiro(8, 8);
@@ -66,6 +72,12 @@ public class Partida {
 		Peça p = tabuleiro.removePeca(origem);
 		Peça refem = tabuleiro.removePeca(destino);
 		tabuleiro.botaPeca(p, destino);
+		
+		if(refem != null) {
+			pecasNoTabu.remove(refem);
+			capturedPecas.add(refem);
+		}
+		
 		return refem;
 	}
 	
@@ -94,6 +106,7 @@ public class Partida {
 	
 	public void BotaNovaPeca(char coluna, int linha, XadrexPeça peca) {
 		tabuleiro.botaPeca(peca, new PosicaoXadrez(coluna, linha).toPosition());
+		pecasNoTabu.add(peca);
 	}
 	
 	private void SetupInicial() {

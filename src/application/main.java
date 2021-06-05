@@ -1,13 +1,14 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import Xadrex.ExcessaoDXadrez;
 import Xadrex.Partida;
 import Xadrex.PosicaoXadrez;
 import Xadrex.XadrexPeça;
-import boardgame.Tabuleiro;
 
 public class main {
 
@@ -15,11 +16,14 @@ public class main {
 		Scanner sc = new Scanner(System.in);
 		//Tabuleiro t1 = new Tabuleiro(8, 8);
 		Partida p1 = new Partida();
-
+		List<XadrexPeça> captured = new ArrayList<>();
+		
+		
+		
 		while (true) {
 			try {
 				UI.LimpaTela();
-				UI.printPartida(p1);
+				UI.printPartida(p1, captured);
 				System.out.println();
 				System.out.println("Origem: ");
 				PosicaoXadrez origem = UI.LerPosicao(sc);
@@ -33,6 +37,11 @@ public class main {
 				PosicaoXadrez destino = UI.LerPosicao(sc);
 
 				XadrexPeça refem = p1.Movimento(origem, destino);
+				
+				if(refem != null) {
+					captured.add(refem);
+				}
+				
 			} catch (ExcessaoDXadrez e) {
 				System.out.println(e.getMessage());
 				sc.nextLine();
