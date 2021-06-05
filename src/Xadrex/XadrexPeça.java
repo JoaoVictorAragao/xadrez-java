@@ -16,6 +16,10 @@ public abstract class XadrexPeça extends Peça {
 		return cor;
 	}
 
+	public PosicaoXadrez getXadrezPosition() {
+		return PosicaoXadrez.fromPosition(position);
+	}
+	
 	protected boolean PecaInimiga(Position position) {
 		XadrexPeça p = (XadrexPeça)getBoard().peca(position);
 		return p != null && p.getCor() != cor;

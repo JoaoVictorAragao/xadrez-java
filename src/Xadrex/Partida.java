@@ -2,6 +2,7 @@ package Xadrex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import Xadrex.peças.Rei;
 import Xadrex.peças.Torre;
@@ -14,6 +15,7 @@ public class Partida {
 	private int turno;
 	private Cor jogador;
 	private Tabuleiro tabuleiro;
+	private boolean check;
 	
 	private List<Peça> pecasNoTabu = new ArrayList<>();
 	private List<Peça> capturedPecas = new ArrayList<>();
@@ -41,6 +43,11 @@ public class Partida {
 		this.jogador = jogador;
 	}
 
+	
+	public boolean getCheck() {
+		return check;
+	}
+	
 	public XadrexPeça[][] getPecas(){
 		XadrexPeça[][] mat = new XadrexPeça[tabuleiro.getLinhas()][tabuleiro.getColuna()];
 		for(int i = 0; i<tabuleiro.getLinhas(); i++) {
@@ -64,6 +71,15 @@ public class Partida {
 		validarPosicaoOrig(origemPos);
 		validarPosicaoDest(origemPos, destinoPos);
 		Peça refem = FazMov(origemPos, destinoPos);
+		
+		if(testeCheck(jogador)) {
+			VoltaMov(origemPos, destinoPos, refem);
+			throw new ExcessaoDXadrez("Você não pode se colocar em check");
+		}
+		
+		check = (testeCheck(oponente(jogador))) ? true : false;
+		
+		
 		ProxTurno();
 		return (XadrexPeça)refem;
 	}
@@ -79,6 +95,18 @@ public class Partida {
 		}
 		
 		return refem;
+	}
+	
+	private void VoltaMov(Position origem, Position destino, Peça refem) {
+		Peça p = tabuleiro.removePeca(destino);
+		tabuleiro.botaPeca(p, origem);
+		
+		if(refem != null) {
+			tabuleiro.botaPeca(refem, destino);
+			capturedPecas.remove(refem);
+			pecasNoTabu.add(refem);
+		}
+		
 	}
 	
 	private void validarPosicaoOrig(Position position) {
@@ -102,6 +130,33 @@ public class Partida {
 	private void ProxTurno() {
 		turno++;
 		jogador = (jogador == Cor.BRANCO) ? Cor.PRETO : Cor.BRANCO;
+	}
+	
+	private Cor oponente(Cor cor) {
+		return (cor == Cor.BRANCO) ? Cor.PRETO : Cor.BRANCO;
+	}
+	
+	private XadrexPeça rei(Cor cor) {
+		List<Peça> list = pecasNoTabu.stream().filter(x -> ((XadrexPeça)x).getCor() == cor).collect(Collectors.toList());
+		for(Peça p : list) {
+			if(p instanceof Rei) {
+				return (XadrexPeça)p;
+			}
+		}
+		throw new IllegalStateException("Não possuí rei da cor "+ cor +"no tabuleiro");
+	}
+	
+	private boolean testeCheck(Cor cor) {
+		Position kingPos = rei(cor).getXadrezPosition().toPosition();	
+		List<Peça> oponentePecas = pecasNoTabu.stream().filter(x -> ((XadrexPeça)x).getCor() == oponente(cor)).collect(Collectors.toList());
+				for(Peça p : oponentePecas) {
+					boolean[][] mat = p.possivelMovs();
+					if(mat[kingPos.getRow()][kingPos.getColuna()]) {
+						return true;
+					}
+					
+		}
+				return false;
 	}
 	
 	public void BotaNovaPeca(char coluna, int linha, XadrexPeça peca) {
