@@ -23,7 +23,11 @@ public class main {
 				System.out.println();
 				System.out.println("Origem: ");
 				PosicaoXadrez origem = UI.LerPosicao(sc);
-
+				
+				boolean[][] possibleMoves = p1.possibleMoves(origem);
+				UI.LimpaTela();
+				UI.printBoard(p1.getPecas(), possibleMoves);
+				
 				System.out.println();
 				System.out.println("Destino: ");
 				PosicaoXadrez destino = UI.LerPosicao(sc);
