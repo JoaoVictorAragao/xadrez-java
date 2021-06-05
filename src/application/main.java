@@ -19,7 +19,7 @@ public class main {
 		while (true) {
 			try {
 				UI.LimpaTela();
-				UI.printBoard(p1.getPecas());
+				UI.printPartida(p1);
 				System.out.println();
 				System.out.println("Origem: ");
 				PosicaoXadrez origem = UI.LerPosicao(sc);

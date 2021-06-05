@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import Xadrex.Cor;
+import Xadrex.Partida;
 import Xadrex.PosicaoXadrez;
 import Xadrex.XadrexPeça;
 
@@ -44,7 +45,14 @@ public class UI {
 			throw new InputMismatchException("Erro ao instanciar tabuleiro, valores devem ir de a1 a h8");
 		}
 	}
-
+	
+	public static void printPartida(Partida partida) {
+		printBoard(partida.getPecas());
+		System.out.println();
+		System.out.println("Turno: "+partida.getTurno());
+		System.out.println("Esperando a jogada de: "+ partida.getJogador());
+	}
+	
 	public static void printBoard(XadrexPeça[][] peca) {
 		for (int i = 0; i < peca.length; i++) {
 			System.out.print((8 - i) + " ");

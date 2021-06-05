@@ -8,13 +8,33 @@ import boardgame.Tabuleiro;
 
 public class Partida {
 	
+	private int turno;
+	private Cor jogador;
 	private Tabuleiro tabuleiro;
 	
 	public Partida() {
 		tabuleiro= new Tabuleiro(8, 8);
+		turno = 1;
+		jogador = Cor.BRANCO;
 		SetupInicial();
 	}
 	
+	public int getTurno() {
+		return turno;
+	}
+
+	public void setTurno(int turno) {
+		this.turno = turno;
+	}
+
+	public Cor getJogador() {
+		return jogador;
+	}
+
+	public void setJogador(Cor jogador) {
+		this.jogador = jogador;
+	}
+
 	public XadrexPeça[][] getPecas(){
 		XadrexPeça[][] mat = new XadrexPeça[tabuleiro.getLinhas()][tabuleiro.getColuna()];
 		for(int i = 0; i<tabuleiro.getLinhas(); i++) {
@@ -38,6 +58,7 @@ public class Partida {
 		validarPosicaoOrig(origemPos);
 		validarPosicaoDest(origemPos, destinoPos);
 		Peça refem = FazMov(origemPos, destinoPos);
+		ProxTurno();
 		return (XadrexPeça)refem;
 	}
 	
@@ -52,6 +73,9 @@ public class Partida {
 		if(!tabuleiro.TemPeca(position)) {
 			throw new ExcessaoDXadrez("Não existe peça nessa posição");
 		}
+		if(jogador != ((XadrexPeça)tabuleiro.peca(position)).getCor()) {
+			throw new ExcessaoDXadrez("Essa peça não é da sua cor");
+		}
 		if(!tabuleiro.peca(position).TemMov()) {
 			throw new ExcessaoDXadrez("Não tem movimento possível para esta peça");
 		}
@@ -61,6 +85,11 @@ public class Partida {
 		if(!tabuleiro.peca(origem).possivelMov(destino)) {
 			throw new ExcessaoDXadrez("A peça escolhida não pode ser movida para o destino");
 		}
+	}
+	
+	private void ProxTurno() {
+		turno++;
+		jogador = (jogador == Cor.BRANCO) ? Cor.PRETO : Cor.BRANCO;
 	}
 	
 	public void BotaNovaPeca(char coluna, int linha, XadrexPeça peca) {
