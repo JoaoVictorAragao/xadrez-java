@@ -48,19 +48,24 @@ public class UI {
 			throw new InputMismatchException("Erro ao instanciar tabuleiro, valores devem ir de a1 a h8");
 		}
 	}
-	
+
 	public static void printPartida(Partida partida, List<XadrexPeça> captured) {
 		printBoard(partida.getPecas());
 		System.out.println();
 		printPecasComidas(captured);
 		System.out.println();
-		System.out.println("Turno: "+partida.getTurno());
-		System.out.println("Esperando a jogada de: "+ partida.getJogador());
-		if(partida.getCheck()) {
-			System.out.println("CHECK!");
+		System.out.println("Turno: " + partida.getTurno());
+		if (!partida.getCheckMat()) {
+			System.out.println("Esperando a jogada de: " + partida.getJogador());
+			if (partida.getCheck()) {
+				System.out.println("CHECK!");
+			}
+		}else {
+			System.out.println("CHECKMATE!!!");
+			System.out.println("Vencedor: "+partida.getJogador());
 		}
 	}
-	
+
 	public static void printBoard(XadrexPeça[][] peca) {
 		for (int i = 0; i < peca.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -103,7 +108,6 @@ public class UI {
 		System.out.print(" ");
 	}
 
-	
 	private static void printPecasComidas(List<XadrexPeça> captured) {
 		List<XadrexPeça> BRANCA = captured.stream().filter(x -> x.getCor() == Cor.BRANCO).collect(Collectors.toList());
 		List<XadrexPeça> PRETO = captured.stream().filter(x -> x.getCor() == Cor.PRETO).collect(Collectors.toList());
@@ -112,12 +116,12 @@ public class UI {
 		System.out.println(ANSI_WHITE);
 		System.out.println(Arrays.toString(BRANCA.toArray()));
 		System.out.println(ANSI_RESET);
-		
+
 		System.out.println("Pretas: ");
 		System.out.println(ANSI_YELLOW);
 		System.out.println(Arrays.toString(PRETO.toArray()));
 		System.out.println(ANSI_RESET);
-		
+
 	}
-	
+
 }

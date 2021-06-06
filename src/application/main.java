@@ -20,7 +20,7 @@ public class main {
 		
 		
 		
-		while (true) {
+		while (!p1.getCheckMat()) {
 			try {
 				UI.LimpaTela();
 				UI.printPartida(p1, captured);
@@ -50,5 +50,7 @@ public class main {
 				sc.nextLine();
 			}
 		}
+		UI.LimpaTela();
+		UI.printPartida(p1, captured);
 	}
 }
