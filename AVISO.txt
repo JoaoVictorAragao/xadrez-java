@@ -1,0 +1,2 @@
+O programa por possuir sistema de cor, é necessário utilizar o git bash na pasta bin utilizando o comando java application/main
+exe do Git presente na pasta do projeto

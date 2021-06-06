@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import Xadrex.peças.Bispo;
 import Xadrex.peças.Cavalo;
 import Xadrex.peças.Peão;
+import Xadrex.peças.Rainha;
 import Xadrex.peças.Rei;
 import Xadrex.peças.Torre;
 import boardgame.Peça;
@@ -218,6 +219,7 @@ public class Partida {
 		BotaNovaPeca('g', 7, new Peão(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('h', 7, new Peão(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('e', 8, new Rei(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('d', 8, new Rainha(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('h', 8, new Torre(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('a', 8, new Torre(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('c', 8, new Bispo(tabuleiro, Cor.PRETO));
@@ -236,6 +238,7 @@ public class Partida {
 		BotaNovaPeca('a', 1, new Torre(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('h', 1, new Torre(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('d', 1, new Rainha(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('c', 1, new Bispo(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('f', 1, new Bispo(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('b', 1, new Cavalo(tabuleiro, Cor.BRANCO));
