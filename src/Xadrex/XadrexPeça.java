@@ -6,7 +6,8 @@ import boardgame.Tabuleiro;
 
 public abstract class XadrexPeça extends Peça {
 	private Cor cor;
-
+	private int count;
+	
 	public XadrexPeça(Tabuleiro board, Cor cor) {
 		super(board);
 		this.cor = cor;
@@ -16,6 +17,18 @@ public abstract class XadrexPeça extends Peça {
 		return cor;
 	}
 
+	public void SobeCount() {
+		count++;
+	}
+	
+	public void DesceCount() {
+		count--;
+	}
+	
+	public int getCount() {
+		return count;
+	}
+	
 	public PosicaoXadrez getXadrezPosition() {
 		return PosicaoXadrez.fromPosition(position);
 	}

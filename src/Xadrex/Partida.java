@@ -95,7 +95,8 @@ public class Partida {
 	}
 
 	private Peça FazMov(Position origem, Position destino) {
-		Peça p = tabuleiro.removePeca(origem);
+		XadrexPeça p =(XadrexPeça)tabuleiro.removePeca(origem);
+		p.SobeCount();
 		Peça refem = tabuleiro.removePeca(destino);
 		tabuleiro.botaPeca(p, destino);
 
@@ -108,7 +109,8 @@ public class Partida {
 	}
 
 	private void VoltaMov(Position origem, Position destino, Peça refem) {
-		Peça p = tabuleiro.removePeca(destino);
+		XadrexPeça p = (XadrexPeça)tabuleiro.removePeca(destino);
+		p.DesceCount();
 		tabuleiro.botaPeca(p, origem);
 
 		if (refem != null) {
