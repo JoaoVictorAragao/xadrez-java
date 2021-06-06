@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import Xadrex.peças.Peão;
 import Xadrex.peças.Rei;
 import Xadrex.peças.Torre;
 import boardgame.Peça;
@@ -205,11 +206,27 @@ public class Partida {
 	}
 
 	private void SetupInicial() {
-		BotaNovaPeca('b', 8, new Torre(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('a', 8, new Rei(tabuleiro, Cor.PRETO));
-		
-		BotaNovaPeca('h', 7, new Torre(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('d', 1, new Torre(tabuleiro, Cor.BRANCO));
+		//PRETO
+		BotaNovaPeca('a', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('b', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('c', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('d', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('e', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('f', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('g', 7, new Peão(tabuleiro, Cor.PRETO));
+		BotaNovaPeca('e', 8, new Rei(tabuleiro, Cor.PRETO));
+		//BotaNovaPeca('h', 8, new Torre(tabuleiro, Cor.PRETO));
+		//BRANCO
+		BotaNovaPeca('a', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('b', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('c', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('d', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('e', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('f', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('g', 2, new Peão(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('h', 2, new Peão(tabuleiro, Cor.BRANCO));
+		//BotaNovaPeca('h', 7, new Torre(tabuleiro, Cor.BRANCO));
+		//BotaNovaPeca('d', 1, new Torre(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO));
 	}
 
