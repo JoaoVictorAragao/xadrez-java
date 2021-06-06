@@ -21,8 +21,9 @@ public class Partida {
 	private Tabuleiro tabuleiro;
 	private boolean check;
 	private boolean checkMat;
-	
-	
+	private XadrexPeça enPassant;
+	private XadrexPeça promoted;
+
 	private List<Peça> pecasNoTabu = new ArrayList<>();
 	private List<Peça> capturedPecas = new ArrayList<>();
 
@@ -35,6 +36,10 @@ public class Partida {
 
 	public int getTurno() {
 		return turno;
+	}
+
+	public XadrexPeça getPromoted() {
+		return promoted;
 	}
 
 	public void setTurno(int turno) {
@@ -56,7 +61,11 @@ public class Partida {
 	public boolean getCheckMat() {
 		return checkMat;
 	}
-	
+
+	public XadrexPeça getEnPassant() {
+		return enPassant;
+	}
+
 	public XadrexPeça[][] getPecas() {
 		XadrexPeça[][] mat = new XadrexPeça[tabuleiro.getLinhas()][tabuleiro.getColuna()];
 		for (int i = 0; i < tabuleiro.getLinhas(); i++) {
@@ -86,20 +95,69 @@ public class Partida {
 			throw new ExcessaoDXadrez("Você não pode se colocar em check");
 		}
 
+		XadrexPeça movedPiece = (XadrexPeça) tabuleiro.peca(destinoPos);
+
+		// #specialmove promotion
+		promoted = null;
+		if (movedPiece instanceof Peão) {
+			if ((movedPiece.getCor() == Cor.BRANCO && destinoPos.getRow() == 0)
+					|| (movedPiece.getCor() == Cor.PRETO && destinoPos.getRow() == 7)) {
+				promoted = (XadrexPeça) tabuleiro.peca(destinoPos);
+				promoted = replacePromotedPiece("Q");
+			}
+		}
+
 		check = (testeCheck(oponente(jogador))) ? true : false;
-		
-		if(testeCheckMat(oponente(jogador))) {
+
+		if (testeCheckMat(oponente(jogador))) {
 			checkMat = true;
-		}else {
-		
+		} else {
+
 			ProxTurno();
 		}
-		
+
+		// Movimento especial
+		if (movedPiece instanceof Peão
+				&& (destino.getLinha() == origem.getLinha() - 2 || destino.getLinha() == origem.getLinha() + 2)) {
+			enPassant = movedPiece;
+		} else {
+			enPassant = null;
+		}
+
 		return (XadrexPeça) refem;
 	}
 
+	public XadrexPeça replacePromotedPiece(String type) {
+		if (promoted == null) {
+			throw new IllegalStateException("Não tem peça para ser promovid");
+		}
+		if (!type.equals("B") && !type.equals("C") && !type.equals("R") & !type.equals("Q")) {
+			return promoted;
+		}
+
+		Position pos = promoted.getXadrezPosition().toPosition();
+		Peça p = tabuleiro.removePeca(pos);
+		pecasNoTabu.remove(p);
+
+		XadrexPeça newPiece = newPiece(type, promoted.getCor());
+		tabuleiro.botaPeca(newPiece, pos);
+		pecasNoTabu.add(newPiece);
+
+		return newPiece;
+	}
+
+	private XadrexPeça newPiece(String type, Cor cor) {
+		if (type.equals("B"))
+			return new Bispo(tabuleiro, cor);
+		if (type.equals("C"))
+			return new Cavalo(tabuleiro, cor);
+		if (type.equals("Q"))
+			return new Rainha(tabuleiro, cor);
+		return new Torre(tabuleiro, cor);
+	}
+
 	private Peça FazMov(Position origem, Position destino) {
-		XadrexPeça p =(XadrexPeça)tabuleiro.removePeca(origem);
+		XadrexPeça p = (XadrexPeça) tabuleiro.removePeca(origem);
 		p.SobeCount();
 		Peça refem = tabuleiro.removePeca(destino);
 		tabuleiro.botaPeca(p, destino);
@@ -109,11 +167,42 @@ public class Partida {
 			capturedPecas.add(refem);
 		}
 
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() + 2) {
+			Position sourceT = new Position(origem.getRow(), origem.getColuna() + 3);
+			Position targetT = new Position(origem.getRow(), origem.getColuna() + 1);
+			XadrexPeça rook = (XadrexPeça) tabuleiro.removePeca(sourceT);
+			tabuleiro.botaPeca(rook, targetT);
+			rook.SobeCount();
+		}
+
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() - 2) {
+			Position sourceT = new Position(origem.getRow(), origem.getColuna() - 4);
+			Position targetT = new Position(origem.getRow(), origem.getColuna() - 1);
+			XadrexPeça rook = (XadrexPeça) tabuleiro.removePeca(sourceT);
+			tabuleiro.botaPeca(rook, targetT);
+			rook.SobeCount();
+		}
+
+		// #specialmove en passant
+		if (p instanceof Peão) {
+			if (origem.getColuna() != destino.getColuna() && refem == null) {
+				Position pawnPosition;
+				if (p.getCor() == Cor.BRANCO) {
+					pawnPosition = new Position(destino.getRow() + 1, destino.getColuna());
+				} else {
+					pawnPosition = new Position(destino.getRow() - 1, destino.getColuna());
+				}
+				refem = tabuleiro.removePeca(pawnPosition);
+				capturedPecas.add(refem);
+				pecasNoTabu.remove(refem);
+			}
+		}
+
 		return refem;
 	}
 
 	private void VoltaMov(Position origem, Position destino, Peça refem) {
-		XadrexPeça p = (XadrexPeça)tabuleiro.removePeca(destino);
+		XadrexPeça p = (XadrexPeça) tabuleiro.removePeca(destino);
 		p.DesceCount();
 		tabuleiro.botaPeca(p, origem);
 
@@ -121,6 +210,36 @@ public class Partida {
 			tabuleiro.botaPeca(refem, destino);
 			capturedPecas.remove(refem);
 			pecasNoTabu.add(refem);
+		}
+
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() + 2) {
+			Position sourceT = new Position(origem.getRow(), origem.getColuna() + 3);
+			Position targetT = new Position(origem.getRow(), origem.getColuna() + 1);
+			XadrexPeça rook = (XadrexPeça) tabuleiro.removePeca(targetT);
+			tabuleiro.botaPeca(rook, sourceT);
+			rook.DesceCount();
+		}
+
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() - 2) {
+			Position sourceT = new Position(origem.getRow(), origem.getColuna() - 4);
+			Position targetT = new Position(origem.getRow(), origem.getColuna() - 1);
+			XadrexPeça rook = (XadrexPeça) tabuleiro.removePeca(targetT);
+			tabuleiro.botaPeca(rook, sourceT);
+			rook.DesceCount();
+		}
+
+		// #specialmove en passant
+		if (p instanceof Peão) {
+			if (origem.getColuna() != destino.getColuna() && refem == enPassant) {
+				XadrexPeça pawn = (XadrexPeça) tabuleiro.removePeca(destino);
+				Position pawnPosition;
+				if (p.getCor() == Cor.BRANCO) {
+					pawnPosition = new Position(3, destino.getColuna());
+				} else {
+					pawnPosition = new Position(4, destino.getColuna());
+				}
+				tabuleiro.botaPeca(pawn, pawnPosition);
+			}
 		}
 
 	}
@@ -178,22 +297,23 @@ public class Partida {
 	}
 
 	private boolean testeCheckMat(Cor cor) {
-		if(!testeCheck(cor)) {
+		if (!testeCheck(cor)) {
 			return false;
 		}
-		List<Peça> robson = pecasNoTabu.stream().filter(x -> ((XadrexPeça) x).getCor() == cor).collect(Collectors.toList());
-			
-		for(Peça p : robson) {
-			boolean[][] mat = p.possivelMovs() ;
-			for(int i=0; i<tabuleiro.getLinhas(); i++) {
-				for(int j=0; j<tabuleiro.getColuna(); j++) {
-					if(mat[i][j]) {
-						Position origem = ((XadrexPeça)p).getXadrezPosition().toPosition();
-						Position destino = new Position(i,j);
-						Peça refem = FazMov(origem,destino);
+		List<Peça> robson = pecasNoTabu.stream().filter(x -> ((XadrexPeça) x).getCor() == cor)
+				.collect(Collectors.toList());
+
+		for (Peça p : robson) {
+			boolean[][] mat = p.possivelMovs();
+			for (int i = 0; i < tabuleiro.getLinhas(); i++) {
+				for (int j = 0; j < tabuleiro.getColuna(); j++) {
+					if (mat[i][j]) {
+						Position origem = ((XadrexPeça) p).getXadrezPosition().toPosition();
+						Position destino = new Position(i, j);
+						Peça refem = FazMov(origem, destino);
 						boolean testeCheck = testeCheck(cor);
 						VoltaMov(origem, destino, refem);
-						if(!testeCheck) {
+						if (!testeCheck) {
 							return false;
 						}
 					}
@@ -202,23 +322,23 @@ public class Partida {
 		}
 		return true;
 	}
-	
+
 	public void BotaNovaPeca(char coluna, int linha, XadrexPeça peca) {
 		tabuleiro.botaPeca(peca, new PosicaoXadrez(coluna, linha).toPosition());
 		pecasNoTabu.add(peca);
 	}
 
 	private void SetupInicial() {
-		//PRETO
-		BotaNovaPeca('a', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('b', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('c', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('d', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('e', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('f', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('g', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('h', 7, new Peão(tabuleiro, Cor.PRETO));
-		BotaNovaPeca('e', 8, new Rei(tabuleiro, Cor.PRETO));
+		// PRETO
+		BotaNovaPeca('a', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('b', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('c', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('d', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('e', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('f', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('g', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('h', 7, new Peão(tabuleiro, Cor.PRETO, this));
+		BotaNovaPeca('e', 8, new Rei(tabuleiro, Cor.PRETO, this));
 		BotaNovaPeca('d', 8, new Rainha(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('h', 8, new Torre(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('a', 8, new Torre(tabuleiro, Cor.PRETO));
@@ -226,18 +346,18 @@ public class Partida {
 		BotaNovaPeca('f', 8, new Bispo(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('b', 8, new Cavalo(tabuleiro, Cor.PRETO));
 		BotaNovaPeca('g', 8, new Cavalo(tabuleiro, Cor.PRETO));
-		//BRANCO
-		BotaNovaPeca('a', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('b', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('c', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('d', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('e', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('f', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('g', 2, new Peão(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('h', 2, new Peão(tabuleiro, Cor.BRANCO));
+		// BRANCO
+		BotaNovaPeca('a', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('b', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('c', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('d', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('e', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('f', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('g', 2, new Peão(tabuleiro, Cor.BRANCO, this));
+		BotaNovaPeca('h', 2, new Peão(tabuleiro, Cor.BRANCO, this));
 		BotaNovaPeca('a', 1, new Torre(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('h', 1, new Torre(tabuleiro, Cor.BRANCO));
-		BotaNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO));
+		BotaNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO, this));
 		BotaNovaPeca('d', 1, new Rainha(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('c', 1, new Bispo(tabuleiro, Cor.BRANCO));
 		BotaNovaPeca('f', 1, new Bispo(tabuleiro, Cor.BRANCO));
